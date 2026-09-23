@@ -20,16 +20,41 @@
       -webkit-backdrop-filter: blur(24px);
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
+    .perspective-container {
+      perspective: 2000px;
+    }
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.8s cubic-bezier(0.15, 1, 0.3, 1);
+      transform-style: preserve-3d;
+    }
+    .flip-card-inner.flipped {
+      transform: rotateY(180deg);
+    }
+    .flip-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: 1.5rem;
+      overflow: hidden;
+    }
+    .flip-back {
+      transform: rotateY(180deg);
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-neutral-800">
 
-  <!-- Apple Style Minimal Header -->
+  <!-- Header -->
   <header class="w-full fixed top-0 z-50 blur-card border-b border-white/5">
     <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
       <div class="flex items-center gap-2">
         <span class="text-xl font-bold tracking-[0.25em] text-white">LEGACY</span>
-        <span class="text-xs px-2 py-0.5 rounded-full bg-white/10 text-neutral-400 font-mono tracking-normal">TR</span>
+        <span class="text-xs px-2 py-0.5 rounded-full bg-white/10 text-neutral-400 font-mono">TR</span>
       </div>
       <nav class="hidden md:flex items-center gap-8 text-xs font-medium tracking-wider text-neutral-400">
         <a href="#" class="hover:text-white transition">MODELLER</a>
@@ -46,63 +71,82 @@
   <!-- Ana Sahne -->
   <main class="flex-1 flex flex-col items-center justify-center pt-24 pb-12 px-4 max-w-7xl mx-auto w-full">
     
-    <!-- Model Başlığı & Dinamik Fiyat -->
+    <!-- Model Başlığı & Fiyat -->
     <div class="text-center my-4">
-      <p id="modelTag" class="text-xs font-semibold tracking-[0.3em] uppercase text-neutral-500 mb-2">ELEKTRİKLİ RESTOMOD</p>
-      <h1 id="modelTitle" class="text-4xl md:text-6xl font-bold tracking-tight text-white mb-2">Legacy GT 1964</h1>
-      <p id="modelPrice" class="text-xl md:text-2xl font-light text-neutral-300 font-mono">4.200.000 ₺'den başlayan fiyatlarla</p>
+      <p id="modelTag" class="text-xs font-semibold tracking-[0.3em] uppercase text-neutral-500 mb-2">AERODİNAMİK FASTBACK</p>
+      <h1 id="modelTitle" class="text-4xl md:text-6xl font-bold tracking-tight text-white mb-2">Legacy Miras-S</h1>
+      <p id="modelPrice" class="text-xl md:text-2xl font-light text-neutral-300 font-mono">2.650.000 ₺'den başlayan fiyatlarla</p>
     </div>
 
-    <!-- Görsel Vitrini & Sağa/Sola Değiştirme -->
-    <div class="relative w-full max-w-5xl aspect-[16/9] my-6 flex items-center justify-center group">
+    <!-- 3D Dönen Sahne -->
+    <div class="relative w-full max-w-5xl aspect-[16/9] my-6 flex items-center justify-center perspective-container">
+      
       <!-- Sol Buton -->
-      <button onclick="prevVehicle()" class="absolute left-2 md:left-4 z-20 p-3 rounded-full blur-card text-white/70 hover:text-white hover:scale-105 transition">
+      <button onclick="prevVehicle()" class="absolute -left-3 md:left-2 z-30 p-3 rounded-full blur-card text-white/70 hover:text-white hover:scale-105 transition shadow-xl">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
         </svg>
       </button>
 
-      <!-- Araç Görseli -->
-      <div class="w-full h-full rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-neutral-950 flex items-center justify-center">
-        <img id="vehicleImage" src="22022.png" alt="Legacy Model" class="w-full h-full object-cover transition-opacity duration-300">
+      <!-- 3D Kart -->
+      <div id="cardBox" class="flip-card-inner border border-white/10 rounded-3xl shadow-2xl bg-neutral-950">
+        <!-- Ön Görünüm -->
+        <div class="flip-face bg-neutral-950 flex items-center justify-center">
+          <div id="frontImgContainer" class="w-full h-full bg-no-repeat bg-cover bg-[position:0%_center] transition-all duration-300"></div>
+          <span class="absolute bottom-4 left-6 px-3 py-1 rounded-full blur-card text-[11px] tracking-widest uppercase font-mono text-neutral-300 border border-white/10">Ön Profil</span>
+        </div>
+        
+        <!-- Arka Görünüm (Ters Yüz) -->
+        <div class="flip-face flip-back bg-neutral-950 flex items-center justify-center">
+          <div id="backImgContainer" class="w-full h-full bg-no-repeat bg-cover bg-[position:100%_center] transition-all duration-300"></div>
+          <span class="absolute bottom-4 left-6 px-3 py-1 rounded-full blur-card text-[11px] tracking-widest uppercase font-mono text-neutral-300 border border-white/10">Arka Profil</span>
+        </div>
       </div>
 
       <!-- Sağ Buton -->
-      <button onclick="nextVehicle()" class="absolute right-2 md:right-4 z-20 p-3 rounded-full blur-card text-white/70 hover:text-white hover:scale-105 transition">
+      <button onclick="nextVehicle()" class="absolute -right-3 md:right-2 z-30 p-3 rounded-full blur-card text-white/70 hover:text-white hover:scale-105 transition shadow-xl">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
       </button>
+
+      <!-- Çevir Butonu -->
+      <button onclick="toggleFlip()" class="absolute top-4 right-6 z-20 flex items-center gap-2 px-4 py-2 rounded-full blur-card text-xs font-semibold tracking-wider uppercase text-white hover:bg-white/20 transition border border-white/10 shadow-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        <span id="flipBtnText">Açıyı Çevir (360°)</span>
+      </button>
     </div>
 
-    <!-- Renk Paleti & Detay Kartı -->
-    <div class="w-full max-w-2xl blur-card p-6 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-6">
+    <!-- Renk & Teknik Veri Barı -->
+    <div class="w-full max-w-3xl blur-card p-6 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl">
       
-      <!-- Yerel Renk Seçici -->
+      <!-- Yerel Renkler -->
       <div class="flex flex-col items-center md:items-start">
         <span class="text-[11px] uppercase tracking-widest text-neutral-400 font-semibold mb-3">Gövde Rengi: <strong id="colorLabel" class="text-white">Ege Mavisi</strong></span>
         <div class="flex gap-3">
-          <button onclick="changeColor('Ege Mavisi', '#16325C')" class="w-7 h-7 rounded-full ring-2 ring-offset-2 ring-offset-black ring-white transition" style="background-color: #16325C;"></button>
-          <button onclick="changeColor('Anadolu Toprağı', '#B85D19')" class="w-7 h-7 rounded-full ring-1 ring-white/20 transition hover:scale-110" style="background-color: #B85D19;"></button>
-          <button onclick="changeColor('Kapadokya Kızılı', '#731822')" class="w-7 h-7 rounded-full ring-1 ring-white/20 transition hover:scale-110" style="background-color: #731822;"></button>
-          <button onclick="changeColor('Olympos Yeşili', '#244238')" class="w-7 h-7 rounded-full ring-1 ring-white/20 transition hover:scale-110" style="background-color: #244238;"></button>
-          <button onclick="changeColor('Ayasofya Grisi', '#8A929A')" class="w-7 h-7 rounded-full ring-1 ring-white/20 transition hover:scale-110" style="background-color: #8A929A;"></button>
+          <button onclick="changeColor('Ege Mavisi')" class="w-7 h-7 rounded-full ring-2 ring-offset-2 ring-offset-black ring-white transition" style="background-color: #16325C;"></button>
+          <button onclick="changeColor('Anadolu Toprağı')" class="w-7 h-7 rounded-full ring-1 ring-white/20 transition hover:scale-110" style="background-color: #B85D19;"></button>
+          <button onclick="changeColor('Kapadokya Kızılı')" class="w-7 h-7 rounded-full ring-1 ring-white/20 transition hover:scale-110" style="background-color: #731822;"></button>
+          <button onclick="changeColor('Olympos Yeşili')" class="w-7 h-7 rounded-full ring-1 ring-white/20 transition hover:scale-110" style="background-color: #244238;"></button>
+          <button onclick="changeColor('Ayasofya Grisi')" class="w-7 h-7 rounded-full ring-1 ring-white/20 transition hover:scale-110" style="background-color: #8A929A;"></button>
         </div>
       </div>
 
-      <!-- Teknik Özet -->
-      <div class="flex items-center gap-6 text-center border-t md:border-t-0 md:border-l border-white/10 pt-4 md:pt-0 md:pl-6">
+      <!-- Teknik Veriler -->
+      <div class="flex items-center gap-8 text-center border-t md:border-t-0 md:border-l border-white/10 pt-4 md:pt-0 md:pl-8">
         <div>
-          <p id="specRange" class="text-xl font-bold font-mono">520 km</p>
-          <p class="text-[10px] uppercase tracking-wider text-neutral-400">Menzil</p>
+          <p id="specRange" class="text-xl font-bold font-mono">600 km</p>
+          <p class="text-[10px] uppercase tracking-wider text-neutral-400">WLTP Menzil</p>
         </div>
         <div>
-          <p id="specAccel" class="text-xl font-bold font-mono">3.8 sn</p>
+          <p id="specAccel" class="text-xl font-bold font-mono">3.4 sn</p>
           <p class="text-[10px] uppercase tracking-wider text-neutral-400">0-100 km/s</p>
         </div>
       </div>
 
-      <!-- Sipariş Butonu -->
+      <!-- Buton -->
       <button class="w-full md:w-auto px-8 py-3.5 rounded-full bg-white text-black font-semibold text-xs tracking-wider uppercase hover:bg-neutral-200 transition shadow-lg">
         Rezerve Et
       </button>
@@ -112,6 +156,38 @@
 
   <script>
     const vehicles = [
+      {
+        tag: "AERODİNAMİK FASTBACK",
+        title: "Legacy Miras-S",
+        price: "2.650.000 ₺",
+        image: "22706.png",
+        range: "600 km",
+        accel: "3.4 sn"
+      },
+      {
+        tag: "SPORTİF PERFORMANS SEDAN",
+        title: "Legacy Miras Black & Ice",
+        price: "2.780.000 ₺",
+        image: "22708.png",
+        range: "580 km",
+        accel: "3.2 sn"
+      },
+      {
+        tag: "KOMPAKT SPORT CROSSOVER",
+        title: "Legacy Tulpar",
+        price: "2.350.000 ₺",
+        image: "22705.png",
+        range: "520 km",
+        accel: "4.8 sn"
+      },
+      {
+        tag: "EXPEDITION LÜKS SUV",
+        title: "Legacy Göktürk",
+        price: "3.450.000 ₺",
+        image: "22707.png",
+        range: "680 km",
+        accel: "4.1 sn"
+      },
       {
         tag: "ELEKTRİKLİ RESTOMOD",
         title: "Legacy GT 1964",
@@ -137,14 +213,6 @@
         accel: "4.5 sn"
       },
       {
-        tag: "LÜKS AİLE SUV",
-        title: "Legacy Spazio",
-        price: "3.150.000 ₺",
-        range: "640 km",
-        image: "22026.jpg",
-        accel: "4.2 sn"
-      },
-      {
         tag: "HAFİF ŞEHİR SERİSİ",
         title: "Legacy Neo-B",
         price: "1.650.000 ₺",
@@ -155,21 +223,33 @@
     ];
 
     let currentIndex = 0;
+    let isFlipped = false;
 
     function renderVehicle(index) {
       const v = vehicles[index];
-      const img = document.getElementById("vehicleImage");
+      const card = document.getElementById("cardBox");
       
-      img.style.opacity = "0";
-      setTimeout(() => {
-        document.getElementById("modelTag").innerText = v.tag;
-        document.getElementById("modelTitle").innerText = v.title;
-        document.getElementById("modelPrice").innerText = `${v.price}'den başlayan fiyatlarla`;
-        document.getElementById("specRange").innerText = v.range;
-        document.getElementById("specAccel").innerText = v.accel;
-        img.src = v.image;
-        img.style.opacity = "1";
-      }, 150);
+      if (isFlipped) {
+        card.classList.remove("flipped");
+        isFlipped = false;
+        document.getElementById("flipBtnText").innerText = "Açıyı Çevir (360°)";
+      }
+
+      document.getElementById("modelTag").innerText = v.tag;
+      document.getElementById("modelTitle").innerText = v.title;
+      document.getElementById("modelPrice").innerText = `${v.price}'den başlayan fiyatlarla`;
+      document.getElementById("specRange").innerText = v.range;
+      document.getElementById("specAccel").innerText = v.accel;
+      
+      document.getElementById("frontImgContainer").style.backgroundImage = `url('${v.image}')`;
+      document.getElementById("backImgContainer").style.backgroundImage = `url('${v.image}')`;
+    }
+
+    function toggleFlip() {
+      const card = document.getElementById("cardBox");
+      isFlipped = !isFlipped;
+      card.classList.toggle("flipped", isFlipped);
+      document.getElementById("flipBtnText").innerText = isFlipped ? "Ön Profile Dön" : "Açıyı Çevir (360°)";
     }
 
     function prevVehicle() {
@@ -182,9 +262,11 @@
       renderVehicle(currentIndex);
     }
 
-    function changeColor(name, hex) {
+    function changeColor(name) {
       document.getElementById("colorLabel").innerText = name;
     }
+
+    renderVehicle(0);
   </script>
 </body>
 </html>
